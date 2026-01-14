@@ -71,6 +71,8 @@ export const removeJoinedEvent = async (req, res) => {
       { new: true }
     );
 
+    
+
     res.status(200).json({
       message: "Joined event removed",
       user,
@@ -105,6 +107,7 @@ export const getUserEvents = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // populate() looks at the IDs in the user document and fetches the full Event data
     const user = await User.findById(userId)
       .populate("createdEvents")
       .populate("joinedEvents")
@@ -114,11 +117,30 @@ export const getUserEvents = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Returning with shorter keys to match your frontend logic
     res.status(200).json({
-      createdEvents: user.createdEvents,
-      joinedEvents: user.joinedEvents,
-      bookedEvents: user.bookedEvents,
+      created: user.createdEvents || [],
+      joined: user.joinedEvents || [],
+      booked: user.bookedEvents || [],
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ---------------- REMOVE CREATED EVENT (DELETE) ---------------- */
+export const removeCreatedEvent = async (req, res) => {
+  try {
+    const { userId, eventId } = req.body;
+
+    // 1. Remove the event ID from the User's created list
+    await User.findByIdAndUpdate(userId, {
+      $pull: { createdEvents: eventId },
+    });
+
+  
+
+    res.status(200).json({ message: "Event removed from your creation list" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

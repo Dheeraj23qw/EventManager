@@ -1,10 +1,13 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useAuth } from "../context/AuthProvider";
+import { Mail, Lock, LogIn, X } from "lucide-react";
 
 function Login() {
+  const [authUser, setAuthUser] = useAuth(); // Use context to update UI instantly
+
   const {
     register,
     handleSubmit,
@@ -16,93 +19,109 @@ function Login() {
       email: data.email,
       password: data.password,
     };
-    await axios
-      .post("http://localhost:4001/user/login", userInfo)
-      .then((res) =>{
-        console.log(res.data);
-        if (res.data) {
-          alert("login successful")
-          document.getElementById("my_modal_3").close();
 
-          window.location.reload();
-        }
-        localStorage.setItem("Users",JSON.stringify(res.data.user));
-        })
+    try {
+      const res = await axios.post("http://localhost:4001/user/login", userInfo);
+      if (res.data) {
+        alert("🎉 Welcome back!");
+        
+        // Save to localStorage
+        localStorage.setItem("Users", JSON.stringify(res.data.user));
+        
+        // Update Auth Context (Instantly updates Navbar/Cards)
+        setAuthUser(res.data.user);
+        
+        // Close modal
+        document.getElementById("my_modal_3").close();
+      }
+    } catch (err) {
+      if (err.response) {
+        alert("Error: " + err.response.data.message);
+      }
+    }
+  };
 
-      .catch((err) => {
-        if (err.response) {
-          console.log(err);
-          alert("Error :"+err.response.data.message);
-        }
-      });
-  }
   return (
     <div>
-      <dialog id="my_modal_3" className="modal">
-        <div className="modal-box">
+      <dialog id="my_modal_3" className="modal backdrop-blur-md">
+        <div className="modal-box bg-[#0f172a] border border-slate-800 rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden">
+          
+          {/* Decorative Glow inside modal */}
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-sky-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+
           <form onSubmit={handleSubmit(onSubmit)} method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <Link
-              to="/"
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            {/* Close Button */}
+            <button
+              type="button"
+              className="absolute right-6 top-6 text-slate-500 hover:text-white transition-colors"
               onClick={() => document.getElementById("my_modal_3").close()}
             >
-              ✕
-            </Link>
+              <X size={20} />
+            </button>
 
-            <h3 className="font-bold text-lg">Login</h3>
-            {/* Email */}
-            <div className="mt-4 space-y-2">
-              <span>Email</span>
-              <br />
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-80 px-3 py-1 border rounded-md outline-none"
-                {...register("email", { required: true })}
-              />
-              <br />
-              {errors.email && (
-                <span className="text-sm text-red-500">
-                  This field is required
-                </span>
-              )}
-            </div>
-            {/* password */}
-            <div className="mt-4 space-y-2">
-              <span>Password</span>
-              <br />
-              <input
-                type="password"
-                placeholder="Enter your password"
-                className="w-80 px-3 py-1 border rounded-md outline-none"
-                {...register("password", { required: true })}
-              />
-              <br />
-              {errors.password && (
-                <span className="text-sm text-red-500">
-                  This field is required
-                </span>
-              )}
+            <div className="mb-8">
+              <h3 className="text-2xl font-black text-white tracking-tight">
+                Welcome <span className="text-sky-400">Back</span>
+              </h3>
+              <p className="text-slate-400 text-sm mt-1">Please enter your details to sign in.</p>
             </div>
 
-            {/* Button */}
-            <div className="flex justify-around mt-6">
-              <button className="bg-pink-500 text-white rounded-md px-3 py-1 hover:bg-pink-700 duration-200">
-                Login
-              </button>
-              <p>
-                Not registered?{" "}
+            {/* Email Input */}
+            <div className="space-y-2 mb-5">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl py-3.5 pl-12 pr-4 text-white focus:border-sky-500 outline-none transition-all placeholder:text-slate-700"
+                  {...register("email", { required: true })}
+                />
+              </div>
+              {errors.email && <span className="text-xs text-red-500 ml-1">This field is required</span>}
+            </div>
+
+            {/* Password Input */}
+            <div className="space-y-2 mb-8">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl py-3.5 pl-12 pr-4 text-white focus:border-sky-500 outline-none transition-all placeholder:text-slate-700"
+                  {...register("password", { required: true })}
+                />
+              </div>
+              {errors.password && <span className="text-xs text-red-500 ml-1">This field is required</span>}
+            </div>
+
+            {/* Login Button */}
+            <button className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-sky-500/20 active:scale-[0.98] flex items-center justify-center gap-2 mb-6">
+              <LogIn size={20} />
+              Sign In
+            </button>
+
+            {/* Footer */}
+            <div className="text-center">
+              <p className="text-slate-400 text-sm">
+                New here?{" "}
                 <Link
                   to="/signup"
-                  className="underline text-blue-500 cursor-pointer"
+                  className="text-sky-400 font-bold hover:underline ml-1"
+                  onClick={() => document.getElementById("my_modal_3").close()}
                 >
-                  Signup
-                </Link>{" "}
+                  Create an account
+                </Link>
               </p>
             </div>
           </form>
         </div>
+        
+        {/* Click outside to close */}
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
     </div>
   );

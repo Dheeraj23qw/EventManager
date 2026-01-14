@@ -7,35 +7,27 @@ import Layout from "./components/Layout";
 import { useAuth } from "./context/AuthProvider";
 import { useEffect } from "react";
 import { generateToken, onMessageListener } from "./notification/firebase";
+import ProtectedRoute from "./utils/protectedRoute";
+import EventsCreated from "./pages/eventCreated";
+import JoinedEvents from "./pages/joinedEvents";
+import BookTickets from "./pages/BookTickets";
+import BookingHistory from "./pages/BookingHistory";
+import NotFound from "./components/Notfound";
 
 function App() {
   const [authUser] = useAuth();
 
   useEffect(() => {
-    // 🔥 Initialize Firebase Cloud Messaging
     const initFCM = async () => {
-      if (!("Notification" in window)) {
-        console.log("Notifications not supported");
-        return;
-      }
-
+      if (!("Notification" in window)) return;
       const token = await generateToken();
-
       if (token) {
         console.log("FCM Token:", token);
-
-        // 🔥 SEND TOKEN TO BACKEND
-        // axios.post("/save-token", { token, userId: authUser?._id });
       }
     };
-
     initFCM();
 
-    // 🔔 FOREGROUND MESSAGE LISTENER
     onMessageListener((payload) => {
-      console.log("Foreground notification:", payload);
-
-      // Example UI action
       alert(payload.notification?.title);
     });
   }, []);
@@ -46,7 +38,19 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/bookevent" element={<BookEvent />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/eventcreation" element={<EventCreation />} />
+
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/eventcreation" element={<EventCreation />} />
+          <Route path="/my-events" element={<EventsCreated />} />
+          <Route path="/joined-events" element={<JoinedEvents />} />
+          <Route path="/browse-events" element={<BookTickets />} />{" "}
+          <Route path="/history" element={<BookingHistory />} />{" "}
+          {/* <Route path="/settings" element={<Settings />} /> */}
+        </Route>
+
+
+        s <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
