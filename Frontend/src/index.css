@@ -1,0 +1,86 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* src/index.css */
+
+/* 1. Force the style on EVERYTHING */
+html, body, #root, * {
+  scrollbar-width: thin !important; /* Firefox */
+  scrollbar-color: #0ea5e9 #020617 !important; /* Firefox: Thumb + Track */
+}
+
+/* 2. Chrome, Safari, Edge, Brave (Webkit) */
+::-webkit-scrollbar {
+  width: 10px !important;
+  display: block !important; /* Ensures it's not hidden */
+}
+
+::-webkit-scrollbar-track {
+  background: #020617 !important; /* Midnight background */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0ea5e9 !important; /* PERMANENT SKY-500 */
+  border-radius: 100px !important;
+  border: 2px solid #020617 !important; /* Creates a gap effect */
+}
+
+/* 3. Hover state for extra brightness */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #38bdf8 !important; /* Sky-400 (slightly brighter on hover) */
+}
+
+/* Add this to your CSS file */
+
+.swiper {
+  /* Create space on the sides for arrows */
+  padding: 0 40px !important; 
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  /*Adjustcolortomatchyoursky-500theme*/color: #0ea5e9 !important;
+  /*Scalethemdowniftheyaretoobig*/transform: scale(0.7);
+  -webkit-transform: scale(0.7);
+  -moz-transform: scale(0.7);
+  -ms-transform: scale(0.7);
+  -o-transform: scale(0.7);
+}
+
+/* ARROWS */
+.swiper-button-prev {
+  left: 0px !important;
+}
+
+.swiper-button-next {
+  right: 0px !important;
+}
+
+/* SWIPER LAYOUT */
+.swiper {
+  padding-bottom: 40px;
+  overflow: hidden!important;
+  position: relative;
+}
+
+/* PAGINATION POSITION */
+.swiper-pagination {
+  bottom: -70 !important;
+  z-index: 50;
+}
+
+/* BULLETS */
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #0ca5f8;
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  width: 28px;
+  border-radius: 6px;
+  background: #0ea5e9;
+}
