@@ -43,7 +43,7 @@ Users can:
 
 | Category  | Technologies Used |
 |---------|------------------|
-| Frontend | React.js, Bootstrap, Swiper.js, Firebase |
+| Frontend | React.js, tailwind, Swiper.js, Firebase |
 | Backend | Node.js, Express.js |
 | Database | MongoDB, Mongoose |
 | Auth & Forms | React Hook Form, Firebase Auth |
@@ -93,12 +93,12 @@ Users can:
 
 ```
 eventmanager/
-├── client/              # React Frontend
+├── fronted/              # React Frontend
 │   ├── components/
 │   ├── pages/
 │   ├── routes/
 │   └── ...
-├── server/              # Node.js + Express Backend
+├── backend/              # Node.js + Express Backend
 │   ├── controllers/
 │   ├── routes/
 │   ├── models/
@@ -115,7 +115,7 @@ eventmanager/
 ### Prerequisites  
 - Node.js v20+  
 - MongoDB (local or Atlas)  
-- Cloudinary account  
+
 
 ---
 
@@ -127,14 +127,14 @@ git clone https://github.com/your-username/eventmanager.git
 cd eventmanager
 
 # Setup frontend
-cd client
-npm install
-npm start
-
-# Setup backend
-cd server
+cd fronted
 npm install
 npm run dev
+
+# Setup backend
+cd backend
+npm install
+nodemon
 ```
 
 ---
@@ -145,10 +145,7 @@ Create a `.env` file in the backend folder:
 
 ```
 MONGO_URI=your_mongodb_url
-CLOUDINARY_NAME=your_cloudinary_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-JWT_SECRET=your_secret_key
+port = 4001
 ```
 
 ---
@@ -170,7 +167,3 @@ It brings together event creation, user registration, and real-time engagement i
 
 ---
 
-## 👨‍💻 Developer  
-
-**Dheeraj Kumar**  
-Full-Stack Developer  
