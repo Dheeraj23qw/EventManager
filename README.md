@@ -8,36 +8,36 @@ It is designed to be fast, scalable, and easy to use for both event creators and
 
 ---
 
-## 📸 Application Screenshots  
+##  Application Screenshots  
 
-### 🏠 Home  
+###  Home  
 ![Home](screenshots/home.png)
 
-### 🔐 Login  
+###  Login  
 ![Login](screenshots/login.png)
 
-### 📝 Signup  
+###  Signup  
 ![Signup](screenshots/signup.png)
 
-### 📅 Create Event  
+###  Create Event  
 ![Create Event](screenshots/eventcreate.png)
 
-### 🧾 Event Form  
+###  Event Form  
 ![Event Form](screenshots/eventform.png)
 
-### 🔍 Search Events  
+###  Search Events  
 ![Search Event](screenshots/searchevent.png)
 
-### 🎟️ Join Event  
+###  Join Event  
 ![Join Event](screenshots/joinevent.png)
 
-### 📜 Event History  
+###  Event History  
 ![History](screenshots/history.png)
 
-### 📂 Sidebar  
+###  Sidebar  
 ![Sidebar](screenshots/sidebar.png)
 
-### ❌ Not Found  
+###  Not Found  
 ![Not Found](screenshots/notfound.png)
 
 
