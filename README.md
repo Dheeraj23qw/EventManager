@@ -40,8 +40,7 @@ It is designed to be fast, scalable, and easy to use for both event creators and
 ### ❌ Not Found  
 ![Not Found](screenshots/notfound.png)
 
-### 🔻 Footer  
-![Footer](screenshots/footer.png)
+
 
 
 ## 🚀 Key Features  
