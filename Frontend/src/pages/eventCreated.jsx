@@ -12,27 +12,33 @@ function EventsCreated() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchMyCreatedEvents = async () => {
-      if (!authUser?._id) return;
+useEffect(() => {
+  const fetchMyCreatedEvents = async () => {
+    if (!authUser?._id) return;
 
-      try {
-        const response = await axios.get(
-          `http://localhost:4001/event/created/${authUser._id}`
-        );
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `http://localhost:4001/event/created/${authUser._id}`
+      );
 
-        if (response.data.success) {
-          setEvents(response.data.events);
-        }
-      } catch (error) {
-        console.error("Error fetching your events:", error);
-      } finally {
-        setLoading(false);
+      if (response.data.success) {
+        // TARGET ONLY CREATED EVENTS:
+        // We reach into response.data (axios) -> data (backend object) -> createdEvents
+        const createdOnly = response.data.data.createdEvents;
+        
+        // Update the 'events' state with ONLY your creations
+        setEvents(createdOnly || []);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching your created events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchMyCreatedEvents();
-  }, [authUser]);
+  fetchMyCreatedEvents();
+}, [authUser?._id]);
 
   const handleDelete = async (eventId) => {
     if (window.confirm("Are you sure you want to delete this event?")) {

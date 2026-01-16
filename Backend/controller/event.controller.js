@@ -118,12 +118,15 @@ export const bookEvent = async (req, res) => {
 };
 
 /* ---------------- GET ONLY CREATED EVENTS ---------------- */
-export const getCreatedEvents = async (req, res) => {
+export const getUserEvents = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // We find the user and populate only the 'createdEvents' array
-    const user = await User.findById(userId).populate("createdEvents");
+    // We populate all three arrays: createdEvents, joinedEvents, and bookedEvents
+    const user = await User.findById(userId)
+      .populate("createdEvents")
+      .populate("joinedEvents")
+      .populate("bookedEvents");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -131,11 +134,14 @@ export const getCreatedEvents = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      // Sending back just the array of created events
-      events: user.createdEvents || [],
+      data: {
+        createdEvents: user.createdEvents || [],
+        joinedEvents: user.joinedEvents || [],
+        bookedEvents: user.bookedEvents || []
+      },
     });
   } catch (error) {
-    console.log("Get Created Events Error:", error);
+    console.log("Get User Events Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -215,5 +221,47 @@ export const getEventById = async (req, res) => {
   } catch (error) {
     console.log("Get Event Error:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/* ---------------- REMOVE JOINED EVENT ---------------- */
+export const removeJoinedEvent = async (req, res) => {
+  try {
+    const { userId, eventId } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { joinedEvents: eventId } },
+      { new: true }
+    );
+
+    // IMPORTANT: You must return success: true
+    res.status(200).json({
+      success: true, 
+      message: "Joined event removed",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/* ---------------- REMOVE BOOKED EVENT ---------------- */
+export const removeBookedEvent = async (req, res) => {
+  try {
+    const { userId, eventId } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { bookedEvents: eventId } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Booked event removed",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

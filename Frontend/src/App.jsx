@@ -14,6 +14,7 @@ import BookTickets from "./pages/BookTickets";
 import BookingHistory from "./pages/BookingHistory";
 import NotFound from "./components/Notfound";
 import EditEvent from "./pages/editcard";
+import StatusPage from "./pages/statusPage";
 
 function App() {
   const [authUser] = useAuth();
@@ -45,9 +46,11 @@ function App() {
           <Route path="/eventcreation" element={<EventCreation />} />
           <Route path="/my-events" element={<EventsCreated />} />
           <Route path="/joined-events" element={<JoinedEvents />} />
-          <Route path="/browse-events" element={<BookTickets />} />{" "}
-          <Route path="/history" element={<BookingHistory />} />{" "}
+          <Route path="/browse-events" element={<BookTickets />} />
+          <Route path="/history" element={<BookingHistory />} />
           <Route path="/edit-event/:id" element={<EditEvent />} />
+          <Route path="/book/:id" element={<BookEvent />} />
+          <Route path="/payment-status/:status" element={<StatusPage />} />
         </Route>
 
 

@@ -26,13 +26,13 @@ function Cards({ item }) {
     
     try {
       if (!joined) {
-        await axios.post("http://localhost:4001/user-events/joined", {
+        await axios.post("http://localhost:4001/event/join", {
           userId,
           eventId: item._id,
         });
         alert(`🎉 You have successfully joined "${item.heading || item.title}"`);
       } else {
-        await axios.post("http://localhost:4001/user-events/joined/remove", {
+        await axios.post("http://localhost:4001event/remove-joined", {
           userId,
           eventId: item._id,
         });
@@ -55,26 +55,7 @@ function Cards({ item }) {
     e.preventDefault();
     setIsBooking(true);
 
-    try {
-      // API call using dynamic userId
-      await axios.post("http://localhost:4001/user-events/booked", {
-        userId,
-        eventId: item._id,
-        bookingDate: new Date(),
-        price: item.price,
-      });
-
-      // ✅ Modern Alert as requested
-      alert(`🎟️ Ticket Booked Successfully! \nEvent: ${item.heading || item.title}`);
-
-      // Redirect to history page
-      navigate("/history");
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("❌ Booking failed. You may have already booked this event.");
-    } finally {
-      setIsBooking(false);
-    }
+  navigate(`/book/${item._id}`, { state: { event: item } });
   };
 
   return (
@@ -114,7 +95,6 @@ function Cards({ item }) {
             "{item.description || "Join us for this exclusive event..."}"
           </p>
 
-          {/* Action Buttons */}
           <div className="mt-auto pt-4 flex gap-2">
             <button
               onClick={handleBookNow}

@@ -3,10 +3,14 @@ import multer from "multer";
 import {
   createEvent,
   deleteCreatedEvent,
-  getCreatedEvents,
   getEventById,
   getEvents,
   updateEvent,
+  joinEvent,
+  bookEvent,
+  removeJoinedEvent,
+  removeBookedEvent,
+  getUserEvents,
 } from "../controller/event.controller.js";
 
 const router = express.Router();
@@ -21,14 +25,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/create", upload.single("thumbnail"), createEvent);
-router.get("/created/:userId", getCreatedEvents);
+//http://localhost:4001/event/
+
+/* ---------------- EVENT MANAGEMENT ---------------- */
 router.get("/all", getEvents);
 router.get("/:id", getEventById);
-
-// Delete event (Matches: http://localhost:4001/event/deleCreatedEvent)
-router.post("/deleCreatedEvent", deleteCreatedEvent);
-
-// Update event (Matches: http://localhost:4001/event/update/:eventId)
+router.post("/create", upload.single("thumbnail"), createEvent);
 router.put("/update/:eventId", upload.single("thumbnail"), updateEvent);
+router.post("/deleCreatedEvent", deleteCreatedEvent); 
+
+
+/* ---------------- USER SPECIFIC EVENTS ---------------- */
+router.get("/created/:userId", getUserEvents);
+
+
+/* ---------------- JOIN / BOOK ACTIONS ---------------- */
+router.post("/join", joinEvent);
+router.post("/book", bookEvent);
+
+/* ---------------- REMOVE ACTIONS ---------------- */
+router.post("/remove-joined", removeJoinedEvent);
+router.post("/remove-booked", removeBookedEvent);
+
 export default router;
