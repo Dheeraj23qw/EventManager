@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthProvider";
+
 
 function EventCreation() {
   const { register, handleSubmit, reset, watch } = useForm();
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [authUser] = useAuth();
 
   const thumbnailFile = watch("thumbnail");
   const startTime = watch("startTime");
@@ -32,6 +35,14 @@ function EventCreation() {
     setLoading(true);
     const formData = new FormData();
 
+    const userId = authUser?._id; 
+
+    if (!userId) {
+      alert("Error: User session not found. Please log in again.");
+      setLoading(false);
+      return;
+    }
+
     Object.keys(data).forEach((key) => {
       if (key === "thumbnail") {
         formData.append(key, data[key][0]);
@@ -47,6 +58,9 @@ function EventCreation() {
       )}`;
       formData.append("timeRange", formattedRange);
     }
+
+    // ✅ Append userId so the backend knows who to update
+    formData.append("userId", userId);
 
     try {
       const response = await fetch("http://localhost:4001/event/create", {

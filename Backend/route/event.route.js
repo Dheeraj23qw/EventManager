@@ -2,9 +2,11 @@ import express from "express";
 import multer from "multer";
 import {
   createEvent,
+  deleteCreatedEvent,
+  getCreatedEvents,
   getEvents,
-  getEventById,
-  deleteEvent,
+  updateEvent,
+ 
 
 } from "../controller/event.controller.js";
 
@@ -21,8 +23,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post("/create", upload.single("thumbnail"), createEvent);
+router.get("/created/:userId", getCreatedEvents);
 router.get("/", getEvents);
-router.get("/:id", getEventById);
-router.delete("/:id", deleteEvent);
+
+
+// Delete event (Matches: http://localhost:4001/event/deleCreatedEvent)
+router.post("/deleCreatedEvent", deleteCreatedEvent);
+
+// Update event (Matches: http://localhost:4001/event/update/:eventId)
+router.put("/update/:eventId", updateEvent);
 
 export default router;

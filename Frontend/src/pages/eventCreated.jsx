@@ -2,46 +2,45 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthProvider";
-import { PlusCircle, Calendar, MapPin, Trash2, Edit3, LayoutGrid, Sparkles } from "lucide-react";
+import { 
+  PlusCircle, Calendar, MapPin, Trash2, Edit3, 
+  LayoutGrid, Sparkles, Clock, IndianRupee, AlignLeft 
+} from "lucide-react";
 
 function EventsCreated() {
-  const [authUser] = useAuth(); // Access the logged-in user's data
+  const [authUser] = useAuth();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCreatedEvents = async () => {
-      // 1. Check if user is logged in
-      if (!authUser?._id) {
-        setLoading(false);
-        return;
-      }
+    const fetchMyCreatedEvents = async () => {
+      if (!authUser?._id) return;
 
       try {
-        // 2. Call your backend API
-        const res = await axios.get(`http://localhost:4001/user-events/${authUser._id}`);
-        
-        // 3. Update state with createdEvents from your backend response
-        setEvents(res.data.created || []);
+        const response = await axios.get(
+          `http://localhost:4001/event/created/${authUser._id}`
+        );
+
+        if (response.data.success) {
+          setEvents(response.data.events);
+        }
       } catch (error) {
-        console.error("Error fetching created events:", error);
+        console.error("Error fetching your events:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCreatedEvents();
+    fetchMyCreatedEvents();
   }, [authUser]);
 
-  // Handle deletion of an event
   const handleDelete = async (eventId) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
       try {
-        await axios.post("http://localhost:4001/user-events/created/remove", {
+        await axios.post("http://localhost:4001/event/deleCreatedEvent", {
           userId: authUser._id,
           eventId: eventId,
         });
-        // Filter out the deleted event from the UI immediately
         setEvents(events.filter((ev) => ev._id !== eventId));
       } catch (error) {
         alert("Failed to delete event.");
@@ -49,6 +48,19 @@ function EventsCreated() {
     }
   };
 
+  const handleUpdateSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.put(`http://localhost:4001/event/update/${eventId}`, formData);
+    if (res.data.success) {
+      alert("Changes saved successfully!");
+      navigate("/events-created"); // Redirect back to your creations list
+    }
+  } catch (error) {
+    console.error("Error updating event:", error);
+    alert("Failed to save changes.");
+  }
+};
   if (loading) {
     return (
       <div className="min-h-screen bg-[#020617] flex items-center justify-center">
@@ -95,23 +107,41 @@ function EventsCreated() {
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-700 text-4xl font-black italic">EVENT</div>
                   )}
-                  <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700 text-sky-400 px-3 py-1 rounded-full text-xs font-bold">
-                    ₹{event.price}
+                  <div className="absolute top-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700 text-sky-400 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                    <IndianRupee size={12} /> {event.price}
                   </div>
                 </div>
 
                 {/* Details Area */}
                 <div className="p-6">
-                  <h3 className="text-lg font-bold text-white mb-4 line-clamp-1">{event.heading || event.title}</h3>
+                  <h3 className="text-lg font-bold text-white mb-3 line-clamp-1">{event.heading}</h3>
                   
-                  <div className="space-y-2 mb-6 text-slate-400 text-[11px] font-medium">
-                    <div className="flex items-center gap-2">
-                      <Calendar size={14} className="text-sky-500" />
-                      {new Date(event.date).toDateString()}
+                  {/* Detailed Information Grid */}
+                  <div className="space-y-3 mb-6">
+                    {/* Date */}
+                    <div className="flex items-center gap-3 text-slate-400 text-[11px] font-medium">
+                      <Calendar size={14} className="text-sky-500 shrink-0" />
+                      <span>{new Date(event.date).toDateString()}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-pink-500" />
-                      {event.location}
+
+                    {/* Time (startTime, endTime, and timeRange) */}
+                    <div className="flex items-start gap-3 text-slate-400 text-[11px] font-medium">
+                      <Clock size={14} className="text-purple-500 shrink-0 mt-0.5" />
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-slate-200">{event.timeRange}</span>
+                      </div>
+                    </div>
+
+                    {/* Location */}
+                    <div className="flex items-center gap-3 text-slate-400 text-[11px] font-medium">
+                      <MapPin size={14} className="text-pink-500 shrink-0" />
+                      <span className="line-clamp-1">{event.location}</span>
+                    </div>
+
+                    {/* Description */}
+                    <div className="flex items-start gap-3 text-slate-400 text-[11px] font-medium pt-2 border-t border-slate-800/50">
+                      <AlignLeft size={14} className="text-emerald-500 shrink-0 mt-0.5" />
+                      <p className="line-clamp-2 leading-relaxed italic">"{event.description}"</p>
                     </div>
                   </div>
 
