@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthProvider";
 
-
-function EventCreation() {
+/**
+ * Props:
+ * mode = "create" | "edit"
+ * eventData = event object when editing
+ */
+function EventForm({ mode = "create", eventData = null }) {
   const { register, handleSubmit, reset, watch } = useForm();
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
@@ -23,6 +27,27 @@ function EventCreation() {
     return `${formattedHour}:${minutes} ${ampm}`;
   };
 
+  // ✅ Prefill form in EDIT mode
+  useEffect(() => {
+    if (mode === "edit" && eventData) {
+      reset({
+        heading: eventData.heading,
+        date: eventData.date,
+        price: eventData.price,
+        location: eventData.location,
+        description: eventData.description,
+        startTime: eventData.startTime,
+        endTime: eventData.endTime,
+      });
+
+      // Existing image preview
+      if (eventData.thumbnail) {
+        setPreview(eventData.thumbnail);
+      }
+    }
+  }, [mode, eventData, reset]);
+
+  // ✅ Preview when user selects new image
   useEffect(() => {
     if (thumbnailFile && thumbnailFile[0]) {
       const url = URL.createObjectURL(thumbnailFile[0]);
@@ -34,47 +59,59 @@ function EventCreation() {
   const onSubmit = async (data) => {
     setLoading(true);
     const formData = new FormData();
-
-    const userId = authUser?._id; 
+    const userId = authUser?._id;
 
     if (!userId) {
-      alert("Error: User session not found. Please log in again.");
+      alert("User session expired. Please login again.");
       setLoading(false);
       return;
     }
 
     Object.keys(data).forEach((key) => {
-      if (key === "thumbnail") {
+      if (key === "thumbnail" && data[key]?.[0]) {
         formData.append(key, data[key][0]);
       } else {
         formData.append(key, data[key]);
       }
     });
 
-    // ✅ Send formatted range
+    // ✅ Time range formatting
     if (data.startTime && data.endTime) {
-      const formattedRange = `${formatTime(data.startTime)} - ${formatTime(
-        data.endTime
-      )}`;
+      const formattedRange = `${formatTime(
+        data.startTime
+      )} - ${formatTime(data.endTime)}`;
       formData.append("timeRange", formattedRange);
     }
 
-    // ✅ Append userId so the backend knows who to update
     formData.append("userId", userId);
 
+    const url =
+      mode === "edit"
+        ? `http://localhost:4001/event/update/${eventData._id}`
+        : "http://localhost:4001/event/create";
+
+    const method = mode === "edit" ? "PUT" : "POST";
+
     try {
-      const response = await fetch("http://localhost:4001/event/create", {
-        method: "POST",
+      const response = await fetch(url, {
+        method,
         body: formData,
       });
 
       if (response.ok) {
-        alert("💙 Event Created Successfully!");
-        reset();
-        setPreview(null);
+        alert(
+          mode === "edit"
+            ? "✅ Event Updated Successfully!"
+            : "🎉 Event Created Successfully!"
+        );
+
+        if (mode === "create") {
+          reset();
+          setPreview(null);
+        }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Submit error:", error);
     } finally {
       setLoading(false);
     }
@@ -86,7 +123,9 @@ function EventCreation() {
         onSubmit={handleSubmit(onSubmit)}
         className="bg-slate-900/40 backdrop-blur-2xl border border-blue-900/20 p-8 rounded-[2rem] shadow-2xl max-w-xl w-full space-y-6"
       >
-        <h2 className="text-3xl font-bold text-white">Create Event</h2>
+        <h2 className="text-3xl font-bold text-white">
+          {mode === "edit" ? "Edit Event" : "Create Event"}
+        </h2>
 
         {/* Title */}
         <input
@@ -104,7 +143,7 @@ function EventCreation() {
           required
         />
 
-        {/* ✅ Time Range */}
+        {/* Time */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-xs text-blue-400">Start Time</label>
@@ -127,7 +166,6 @@ function EventCreation() {
           </div>
         </div>
 
-        {/* ✅ Preview */}
         {startTime && endTime && (
           <p className="text-green-400 text-sm font-semibold">
             🕒 {formatTime(startTime)} – {formatTime(endTime)}
@@ -161,7 +199,15 @@ function EventCreation() {
         />
 
         {/* Thumbnail */}
-        <input type="file" {...register("thumbnail")} required />
+        <input type="file" {...register("thumbnail")} />
+
+        {preview && (
+          <img
+            src={preview}
+            alt="preview"
+            className="w-full h-48 object-cover rounded-xl border border-slate-700"
+          />
+        )}
 
         {/* Submit */}
         <button
@@ -169,11 +215,17 @@ function EventCreation() {
           disabled={loading}
           className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold"
         >
-          {loading ? "Creating..." : "Publish Event"}
+          {loading
+            ? mode === "edit"
+              ? "Updating..."
+              : "Creating..."
+            : mode === "edit"
+            ? "Update Event"
+            : "Publish Event"}
         </button>
       </form>
     </div>
   );
 }
 
-export default EventCreation;
+export default EventForm;

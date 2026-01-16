@@ -167,10 +167,12 @@ export const deleteCreatedEvent = async (req, res) => {
 // UPDATE EVENT DETAILS
 export const updateEvent = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     const { eventId } = req.params;
     const updateData = req.body;
 
-    // If a new thumbnail was uploaded (handled by your multer middleware)
     if (req.file) {
       updateData.thumbnail = req.file.path;
     }
@@ -178,7 +180,7 @@ export const updateEvent = async (req, res) => {
     const updatedEvent = await Event.findByIdAndUpdate(
       eventId,
       { $set: updateData },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!updatedEvent) {
@@ -193,5 +195,25 @@ export const updateEvent = async (req, res) => {
   } catch (error) {
     console.error("Update Error:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+export const getEventById = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      event,
+    });
+  } catch (error) {
+    console.log("Get Event Error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

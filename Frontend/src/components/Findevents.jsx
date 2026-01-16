@@ -16,7 +16,7 @@ function Findevents() {
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:4001/event");
+        const res = await axios.get("http://localhost:4001/event/all");
 
         const apiEvents =
           res?.data?.events?.filter(event => event.price > 0) || [];

@@ -13,6 +13,7 @@ import JoinedEvents from "./pages/joinedEvents";
 import BookTickets from "./pages/BookTickets";
 import BookingHistory from "./pages/BookingHistory";
 import NotFound from "./components/Notfound";
+import EditEvent from "./pages/editcard";
 
 function App() {
   const [authUser] = useAuth();
@@ -46,7 +47,7 @@ function App() {
           <Route path="/joined-events" element={<JoinedEvents />} />
           <Route path="/browse-events" element={<BookTickets />} />{" "}
           <Route path="/history" element={<BookingHistory />} />{" "}
-          {/* <Route path="/settings" element={<Settings />} /> */}
+          <Route path="/edit-event/:id" element={<EditEvent />} />
         </Route>
 
 
