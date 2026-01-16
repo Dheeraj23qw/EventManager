@@ -8,6 +8,41 @@ It is designed to be fast, scalable, and easy to use for both event creators and
 
 ---
 
+##  Application Screenshots  
+
+###  Home  
+![Home](screenshots/home.png)
+
+###  Login  
+![Login](screenshots/login.png)
+
+###  Signup  
+![Signup](screenshots/signup.png)
+
+###  Create Event  
+![Create Event](screenshots/eventcreate.png)
+
+###  Event Form  
+![Event Form](screenshots/eventform.png)
+
+###  Search Events  
+![Search Event](screenshots/searchevent.png)
+
+###  Join Event  
+![Join Event](screenshots/joinevent.png)
+
+###  Event History  
+![History](screenshots/history.png)
+
+###  Sidebar  
+![Sidebar](screenshots/sidebar.png)
+
+###  Not Found  
+![Not Found](screenshots/notfound.png)
+
+
+
+
 ## 🚀 Key Features  
 
 ### 🧑‍💼 1. Organizer Dashboard  
