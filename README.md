@@ -8,38 +8,56 @@ It is designed to be fast, scalable, and easy to use for both event creators and
 
 ---
 
-##  Application Screenshots  
+## Application Screenshots
 
-###  Home  
-![Home](screenshots/home.png)
+### Home
+[![Home](screenshots/home.png)](screenshots/home.png)
 
-###  Login  
-![Login](screenshots/login.png)
+### Login
+[![Login](screenshots/login.png)](screenshots/login.png)
 
-###  Signup  
-![Signup](screenshots/signup.png)
+### Signup
+[![Signup](screenshots/signup.png)](screenshots/signup.png)
 
-###  Create Event  
-![Create Event](screenshots/eventcreate.png)
+### Sidebar
+[![Sidebar](screenshots/sidebar.png)](screenshots/sidebar.png)
 
-###  Event Form  
-![Event Form](screenshots/eventform.png)
+### Footer
+[![Footer](screenshots/footer.png)](screenshots/footer.png)
 
-###  Search Events  
-![Search Event](screenshots/searchevent.png)
+---
 
-###  Join Event  
-![Join Event](screenshots/joinevent.png)
+### Create Event
+[![Create Event](screenshots/eventcreate.png)](screenshots/eventcreate.png)
 
-###  Event History  
-![History](screenshots/history.png)
+### Event Form
+[![Event Form](screenshots/eventform.png)](screenshots/eventform.png)
 
-###  Sidebar  
-![Sidebar](screenshots/sidebar.png)
+### Search Events
+[![Search Event](screenshots/searchevent.png)](screenshots/searchevent.png)
 
-###  Not Found  
-![Not Found](screenshots/notfound.png)
+### Join Event
+[![Join Event](screenshots/joinevent.png)](screenshots/joinevent.png)
 
+### Joined Confirmation
+[![Joined 2](screenshots/joined_2.png)](screenshots/joined_2.png)
+
+---
+
+### My Creations
+[![My Creation](screenshots/my_creation.png)](screenshots/my_creation.png)
+
+### My Bookings
+[![My Booking](screenshots/mybooking.png)](screenshots/mybooking.png)
+
+### Event History
+[![History](screenshots/history.png)](screenshots/history.png)
+
+### Payment
+[![Payment](screenshots/payment.png)](screenshots/payment.png)
+
+### Not Found
+[![Not Found](screenshots/notfound.png)](screenshots/notfound.png)
 
 
 
