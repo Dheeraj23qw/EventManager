@@ -276,15 +276,14 @@ nodemon
 
 Create a `.env` file in the backend folder:
 
-```
+
 PORT=4001
 MONGO_URI=mongodb://127.0.0.1:27017/eventmanager
 STRIPE_SECRET_KEY=sk_test_yourStripeSecretKeyHere
 
-```
 Create a `.env` file in the fronted folder:
 
-```
+
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_yourStripePublishableKeyHere
 
 ```
