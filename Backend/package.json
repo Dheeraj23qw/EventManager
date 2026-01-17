@@ -13,12 +13,13 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.21.0",
     "mongoose": "^8.7.0",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "stripe": "^20.2.0"
   }
 }

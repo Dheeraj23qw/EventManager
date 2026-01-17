@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   Ticket, 
-  Calendar, 
   ArrowLeft, 
   CreditCard, 
   Smartphone, 
@@ -10,18 +9,78 @@ import {
   ShieldCheck,
   CheckCircle2
 } from 'lucide-react';
+import axios from 'axios';
+import { useAuth } from '../context/AuthProvider';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 
 function BookEvent() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [authUser] = useAuth(); 
   
-  // Local state for UI interaction
+  const stripe = useStripe();
+  const elements = useElements();
+
   const [selectedMethod, setSelectedMethod] = useState('upi');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Fallback data if no state is passed
+  // Safely grab event data
   const { event } = location.state || { 
-    event: { heading: "Developer Conference 2024", price: 1299, date: new Date(), location: "Patna, India" } 
+    event: { heading: "Event", price: 0, _id: null } 
+  };
+
+  const userId = authUser?._id;
+
+  // Handle Redirection if data is missing
+  useEffect(() => {
+    if (!event._id && !event.id) {
+      navigate('/browse-events');
+    }
+  }, [event, navigate]);
+
+  const handlePayment = async (e) => {
+    if (e) e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setIsProcessing(true);
+
+    try {
+      const response = await axios.post('http://localhost:4001/payment/create-intent', {
+        amount: event.price,
+        eventId: event._id || event.id,
+        userId: userId,
+        paymentMethodType: selectedMethod
+      });
+
+      if (response.data.success) {
+        const { clientSecret } = response.data;
+
+        if (selectedMethod === 'card') {
+          const cardElement = elements.getElement(CardElement);
+          const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+              card: cardElement,
+              billing_details: { name: authUser?.username || 'Customer' },
+            },
+          });
+
+          if (result.error) {
+            console.error(result.error.message);
+            navigate(`/payment-status/cancel`);
+          } else if (result.paymentIntent.status === 'succeeded') {
+            navigate(`/payment-status/success`);
+          }
+        } else {
+          // Simulation for UPI/Netbanking
+          navigate(`/payment-status/success`); 
+        }
+      }
+    } catch (error) {
+      console.error("Payment Error:", error);
+      navigate(`/payment-status/cancel`);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const paymentMethods = [
@@ -30,32 +89,19 @@ function BookEvent() {
     { id: 'netbanking', name: 'Net Banking', icon: <Globe className="text-orange-400" />, desc: 'All major Indian banks' },
   ];
 
-  const handleFakeSubmit = (e) => {
-    e.preventDefault();
-    setIsProcessing(true);
-    // Simulate a delay for the UI feel
-    setTimeout(() => {
-      setIsProcessing(false);
-      alert(`Demo: Redirecting to ${selectedMethod} gateway...`);
-    }, 2000);
-  };
+  if (!event._id && !event.id) return null;
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-200 pt-28 pb-12 px-6">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
         
-        {/* LEFT: Order Summary */}
+        {/* LEFT: Summary */}
         <div className="space-y-6">
-          <button 
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors text-sm font-bold"
-          >
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-500 hover:text-white text-sm font-bold">
             <ArrowLeft size={16} /> Back
           </button>
-
-          <div className="bg-[#0f172a]/40 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
+          <div className="bg-[#0f172a]/40 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl">
             <h2 className="text-3xl font-black text-white mb-6">Order <span className="text-sky-400">Summary</span></h2>
-            
             <div className="space-y-4">
               <div className="flex justify-between items-center bg-slate-950/50 p-4 rounded-2xl border border-slate-800/50">
                 <div className="flex items-center gap-3">
@@ -64,78 +110,67 @@ function BookEvent() {
                 </div>
                 <span className="text-white font-bold text-sm">₹{event.price}</span>
               </div>
-
-              <div className="flex justify-between items-center px-4 py-2 text-slate-400 text-xs">
-                <span>Platform Fee</span>
-                <span className="text-emerald-500 font-bold">₹0.00</span>
-              </div>
-
               <div className="pt-4 border-t border-slate-800 flex justify-between items-center">
-                <span className="text-lg font-bold">Total Amount</span>
+                <span className="text-lg font-bold">Total</span>
                 <span className="text-2xl font-black text-sky-400">₹{event.price}</span>
               </div>
-            </div>
-
-            <div className="mt-8 flex items-center gap-3 text-xs text-slate-500 bg-slate-900/50 p-4 rounded-xl">
-              <ShieldCheck size={18} className="text-emerald-500" />
-              Your payment is secured with industry-standard encryption.
             </div>
           </div>
         </div>
 
-        {/* RIGHT: Payment Options UI */}
+        {/* RIGHT: Payment Options */}
         <div className="bg-[#0f172a]/60 border border-slate-800 rounded-[2.5rem] p-8 shadow-2xl">
-          <h3 className="text-xl font-bold text-white mb-2">Select Payment Method</h3>
-          <p className="text-slate-500 text-xs mb-8 font-medium">Choose your preferred way to pay</p>
-
+          <h3 className="text-xl font-bold text-white mb-8">Select Payment Method</h3>
+          
           <div className="space-y-4">
             {paymentMethods.map((method) => (
-              <div 
-                key={method.id}
-                onClick={() => setSelectedMethod(method.id)}
-                className={`relative cursor-pointer transition-all duration-300 p-5 rounded-3xl border-2 flex items-center gap-4 ${
-                  selectedMethod === method.id 
-                  ? 'border-sky-500 bg-sky-500/5 shadow-[0_0_20px_rgba(14,165,233,0.1)]' 
-                  : 'border-slate-800 bg-slate-900/30 hover:border-slate-700'
-                }`}
-              >
-                <div className={`p-3 rounded-2xl ${selectedMethod === method.id ? 'bg-sky-500/10' : 'bg-slate-800'}`}>
-                  {method.icon}
-                </div>
-                
-                <div className="flex-1">
-                  <p className={`font-bold text-sm ${selectedMethod === method.id ? 'text-white' : 'text-slate-300'}`}>
-                    {method.name}
-                  </p>
-                  <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">
-                    {method.desc}
-                  </p>
+              <div key={method.id} className="space-y-3">
+                <div 
+                  onClick={() => setSelectedMethod(method.id)}
+                  className={`cursor-pointer p-5 rounded-3xl border-2 flex items-center gap-4 transition-all ${
+                    selectedMethod === method.id ? 'border-sky-500 bg-sky-500/5' : 'border-slate-800 bg-slate-900/30'
+                  }`}
+                >
+                  <div className={`p-3 rounded-2xl ${selectedMethod === method.id ? 'bg-sky-500/10' : 'bg-slate-800'}`}>
+                    {method.icon}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-sm">{method.name}</p>
+                    <p className="text-[10px] text-slate-500 font-medium tracking-wider">{method.desc}</p>
+                  </div>
+                  {selectedMethod === method.id && <CheckCircle2 size={20} className="text-sky-500" />}
                 </div>
 
-                {selectedMethod === method.id && (
-                  <CheckCircle2 size={20} className="text-sky-500" />
+                {/* THIS IS THE CARD INPUT FIELD */}
+                {method.id === 'card' && selectedMethod === 'card' && (
+                  <div className="p-5 bg-slate-950 border border-slate-700 rounded-2xl animate-in fade-in slide-in-from-top-2">
+                    <label className="text-[10px] text-slate-500 font-bold uppercase mb-3 block">Card Details</label>
+                    <CardElement 
+                      options={{
+                        style: {
+                          base: {
+                            fontSize: '16px',
+                            color: '#ffffff',
+                            '::placeholder': { color: '#64748b' },
+                          },
+                          invalid: { color: '#ef4444' },
+                        },
+                      }}
+                    />
+                  </div>
                 )}
               </div>
             ))}
           </div>
 
           <button
-            onClick={handleFakeSubmit}
-            disabled={isProcessing}
-            className="w-full mt-10 bg-sky-500 hover:bg-sky-400 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-lg shadow-sky-500/20 active:scale-95 flex items-center justify-center gap-3"
+            onClick={handlePayment}
+            disabled={isProcessing || !stripe}
+            className="w-full mt-10 bg-sky-500 hover:bg-sky-400 text-white py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 disabled:opacity-50"
           >
-            {isProcessing ? (
-              <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              `Pay ₹${event.price}`
-            )}
+            {isProcessing ? <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : `Pay ₹${event.price}`}
           </button>
-          
-          <p className="text-center text-[10px] text-slate-600 mt-4 font-bold uppercase tracking-widest">
-            Secured by Global Standards
-          </p>
         </div>
-
       </div>
     </div>
   );
