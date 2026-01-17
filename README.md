@@ -8,6 +8,15 @@ It is designed to be fast, scalable, and easy to use for both event creators and
 
 ---
 
+<div style="display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px;">
+  <img src="screenshots/home.png" width="300" />
+  <img src="screenshots/login.png" width="300" />
+  <img src="screenshots/signup.png" width="300" />
+  <img src="screenshots/eventcreate.png" width="300" />
+  <img src="screenshots/searchevent.png" width="300" />
+  <img src="screenshots/my_creation.png" width="300" />
+</div>
+
 ## Application Screenshots
 
 ### Home
