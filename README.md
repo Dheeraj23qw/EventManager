@@ -8,60 +8,27 @@ It is designed to be fast, scalable, and easy to use for both event creators and
 
 ---
 
-<div style="display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px;">
-  <img src="screenshots/home.png" width="300" />
-  <img src="screenshots/login.png" width="300" />
-  <img src="screenshots/signup.png" width="300" />
-  <img src="screenshots/eventcreate.png" width="300" />
-  <img src="screenshots/searchevent.png" width="300" />
-  <img src="screenshots/my_creation.png" width="300" />
+## 📸 Application Gallery
+
+<div style="display: flex; overflow-x: auto; gap: 20px; white-space: nowrap; padding: 10px; border-radius: 10px; background-color: #f6f8fa;">
+  <img src="screenshots/home.png" height="250" alt="Home" />
+  <img src="screenshots/login.png" height="250" alt="Login" />
+  <img src="screenshots/signup.png" height="250" alt="Signup" />
+  <img src="screenshots/sidebar.png" height="250" alt="Sidebar" />
+  <img src="screenshots/footer.png" height="250" alt="Footer" />
+  <img src="screenshots/eventcreate.png" height="250" alt="Create Event" />
+  <img src="screenshots/eventform.png" height="250" alt="Event Form" />
+  <img src="screenshots/searchevent.png" height="250" alt="Search Event" />
+  <img src="screenshots/joinevent.png" height="250" alt="Join Event" />
+  <img src="screenshots/joined_2.png" height="250" alt="Joined Confirmation" />
+  <img src="screenshots/my_creation.png" height="250" alt="My Creations" />
+  <img src="screenshots/mybooking.png" height="250" alt="My Bookings" />
+  <img src="screenshots/history.png" height="250" alt="History" />
+  <img src="screenshots/payment.png" height="250" alt="Payment" />
+  <img src="screenshots/notfound.png" height="250" alt="Not Found" />
 </div>
 
-## Application Screenshots
-
-### Home
-[![Home](screenshots/home.png)](screenshots/home.png)
-
-### Login
-[![Login](screenshots/login.png)](screenshots/login.png)
-
-### Signup
-[![Signup](screenshots/signup.png)](screenshots/signup.png)
-
-### My Creations
-[![My Creation](screenshots/my_creation.png)](screenshots/my_creation.png)
-
-### My Bookings
-[![My Booking](screenshots/mybooking.png)](screenshots/mybooking.png)
-
-### Event History
-[![History](screenshots/history.png)](screenshots/history.png)
-
-### Payment
-[![Payment](screenshots/payment.png)](screenshots/payment.png)
-
-### Not Found
-[![Not Found](screenshots/notfound.png)](screenshots/notfound.png)
-
----
-
-### Create Event
-[![Create Event](screenshots/eventcreate.png)](screenshots/eventcreate.png)
-
-### Event Form
-[![Event Form](screenshots/eventform.png)](screenshots/eventform.png)
-
-### Search Events
-[![Search Event](screenshots/searchevent.png)](screenshots/searchevent.png)
-
-### Join Event
-[![Join Event](screenshots/joinevent.png)](screenshots/joinevent.png)
-
-### Joined Confirmation
-[![Joined 2](screenshots/joined_2.png)](screenshots/joined_2.png)
-
----
-
+<p align="center"><i>(Scroll horizontally to view more screenshots)</i></p>
 
 
 
