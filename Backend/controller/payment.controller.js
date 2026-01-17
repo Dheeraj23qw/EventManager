@@ -1,6 +1,8 @@
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import Booking from "../model/booking.model.js";
+import User from "../model/user.model.js";
+import mongoose from "mongoose"; // Fixes the ReferenceError
 
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

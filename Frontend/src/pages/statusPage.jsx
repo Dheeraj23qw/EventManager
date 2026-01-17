@@ -56,14 +56,14 @@ function StatusPage() {
         <div className="space-y-4">
           {isSuccess ? (
             <Link 
-              to="/joined-events" 
+              to="/browse-events" 
               className="w-full bg-sky-500 hover:bg-sky-400 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 transition-all shadow-lg shadow-sky-500/20"
             >
               <Ticket size={18} /> View Booked Tickets <ArrowRight size={18} />
             </Link>
           ) : (
             <Link 
-              to="/joined-events" 
+              to="/history" 
               className="w-full bg-slate-800 hover:bg-slate-700 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 transition-all"
             >
               <History size={18} /> View Booking History

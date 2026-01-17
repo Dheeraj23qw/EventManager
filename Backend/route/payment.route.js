@@ -4,7 +4,6 @@ import {
   confirmBooking, 
   createPaymentIntent, 
   getTransactionHistory,
-  getUserBookedEvents // Add this if you want to use the "My Tickets" page
 } from '../controller/payment.controller.js';
 
 const router = express.Router();
