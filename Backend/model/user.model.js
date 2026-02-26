@@ -1,5 +1,7 @@
-import mongoose from "mongoose";
 
+
+import mongoose from "mongoose";
+// #db-schema
 const userSchema = mongoose.Schema(
   {
     fullname: {
